@@ -53,12 +53,16 @@ const visualize = (joyCon, packet) => {
   if (showDebug.checked) {
     const controller = joyCon instanceof JoyConLeft ? debugLeft : debugRight;
     controller.querySelector('pre').textContent =
+    'Orientation: \n' +
       JSON.stringify(orientation, null, 2) +
       '\n' +
+    'Orientation Quaternion: \n' + 
       JSON.stringify(orientationQuaternion, null, 2) +
       '\n' +
+    'Gyroscope: \n' +
       JSON.stringify(gyroscope, null, 2) +
       '\n' +
+    'Accelerometer: \n' +
       JSON.stringify(accelerometer, null, 2) +
       '\n';
     const meterMultiplier = 300;
