@@ -9,19 +9,20 @@
     />
 
     <title>
-      Joy-Con and HVCController (ファミリーコンピュータ コントローラー) WebHID
+      Play Skate-Game
     </title>
 
-    <link rel="stylesheet" href="style.css" />
-    <link rel="stylesheet" href="joy-cons.css" />
+    <link rel="stylesheet" href="static/styles/style.css" />
+    <link rel="stylesheet" href="static/styles/joy-cons.css" />
 
-    <script src="game.js" type="module"></script>
+    <script src="static/scripts/game.js" type="module"></script>
   </head>
   <body>
     <h1>
-      Joy-Con and HVC-Controller (ファミリーコンピュータ コントローラー) WebHID
+      Skate Game
     </h1>
     <ol>
+      <div id="connect-div">
       <li>
         Connect the
         <a href="https://en.wikipedia.org/wiki/Joy-Con#Other_platforms"
@@ -31,23 +32,26 @@
       <li>
         Click the button below to pair the Joy-Cons via
         <a href="https://web.dev/hid/">WebHID</a>.
-        <div>
           <button id="connect-joy-cons" type="button">Connect Joy-Cons</button>
-          <button id="vibrate-joy-cons" type="button">Vibrate Joy-Cons</button>
-
+          <!--button id="vibrate-joy-cons" type="button">Vibrate Joy-Cons</button-->
+      </div>
+      <div id="timer-div">
+        <h1 id="time-text"></h1>
+      </div>
+      <div id="score-div">
+        <h1 id="score-text"></h1>
+      </div>
+        <div id="start-div">
+          <h2> To start, either stomp your foot twice, or press the button bellow:</h2>
           <button id="start-button" type="button">Start</button>
         </div>
       </li>
-      <li>
-        Swing the Joy-Cons around, move the joysticks, and press the buttons.
-      </li>
-    </ol>
     <div>
       <input id="show-debug" type="checkbox" />
       <label for="show-debug">Show debug info</label>
     </div>
 
-    <figure>
+    <!-- <figure>
       <div id="joycon-l" class="joycon productId8198">
         <div id="joystick-left" class="joystick"></div>
         <div class="buttons">
@@ -72,7 +76,7 @@
         <i id="home"></i>
         <strong class="back-buttons" id="r"></strong>
       </div>
-    </figure>
+    </figure> -->
 
     <div id="debug">
       <div id="debug-left">
