@@ -1,9 +1,8 @@
 /*
 	--- COLORS ---
-	light:  HoneyDew
-	medium: DarkSeaGreen
-	dark:   DarkOliveGreen
-	text:   DarkSlateGray
+	body-background: IndianRed
+	div-background:  Ivory
+	
 */
 
 * {
@@ -13,7 +12,7 @@
 }
 
 body {
-	background-color: DarkSeaGreen;
+	background-color: IndianRed;
 	height: 100vh;
 	margin: 0;
 	display: flex;
@@ -43,7 +42,7 @@ h3 { font-size: 1.2em; }
 }
 
 .out {
-	background-color: HoneyDew;
+	background-color: Ivory;
 	border-radius: 24px;
 	margin: 18px;
 	padding: 18px;
@@ -55,7 +54,7 @@ h3 { font-size: 1.2em; }
 }
 
 .in {
-	background-color: DarkOliveGreen;
+	background-color: DarkRed;
 	border-radius: 24px;
 	margin: 18px;
 	padding: 18px;
