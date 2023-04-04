@@ -13,7 +13,7 @@ def index():
 
 @app.route('/game')
 def game():
-    return game('game.html')
+    return render_template('game.html')
 
 @app.route("/oz")
 def oz():
