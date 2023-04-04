@@ -8,6 +8,7 @@ import {
 
 const connectButton = document.querySelector('#connect-joy-cons');
 const vibrateButton = document.querySelector('#vibrate-joy-cons');
+const startButton = document.querySelector('#start-button');
 const debugLeft = document.querySelector('#debug-left');
 const debugRight = document.querySelector('#debug-right');
 const showDebug = document.querySelector('#show-debug');
@@ -17,6 +18,58 @@ document.querySelector('#joycon-l').style.visibility = 'hidden';
 document.querySelector('#joycon-r').style.visibility = 'hidden';
 connectButton.addEventListener('click', connectJoyCon);
 vibrateButton.style.visibility = 'hidden';
+startButton.style.visibility = 'hidden';
+
+
+
+const Game = class {
+  constructor() {
+    this.timeLimit = 60;
+    this.currentTime = 0;
+    this.score = 0;
+    this.leg = null;
+    this.active = false;
+    this.restart = false;
+    this.incSource = new EventSource('/increment');
+    this.incSource.onmessage = function (e) {
+      if(!this.active) return;
+      this.score = parseInt(e.data); 
+      scoreChanged();
+    }
+
+    this.startSource = new EventSource('/start');
+    this.startSource.onmessage = function (e) {
+      if(this.active) {
+        this.restart = true;
+      }
+      else {
+        this.play();
+      }
+    }
+
+  }
+
+  async update() {
+    // here update the timer and then the HTML. Check if the game is over.  
+  }
+
+  scoreChanged = function() {
+    if(!this.active) {
+      return
+    }
+    this.leg.rumble(600,600,0.5);
+    // play sound
+    var audio = new Audio('media/audio/score.mp3');
+    audio.play();
+  }
+
+  play() {
+    this.active = true;
+    this.currentTime = 0;
+    this.update();
+    }
+  }
+}
 
 
 const visualize = (joyCon, packet) => {
