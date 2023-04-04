@@ -23,11 +23,11 @@ startButton.style.visibility = 'hidden';
 
 
 const Game = class {
-  constructor() {
+  constructor(joyCon) {
     this.timeLimit = 60;
     this.currentTime = 0;
     this.score = 0;
-    this.leg = null;
+    this.leg = joyCon;
     this.active = false;
     this.restart = false;
     this.incSource = new EventSource('/increment');
@@ -41,15 +41,27 @@ const Game = class {
     this.startSource.onmessage = function (e) {
       if(this.active) {
         this.restart = true;
+        this.play();
       }
       else {
         this.play();
       }
     }
-
   }
 
   async update() {
+    setInterval (async () => {
+      if(!this.active || this.restart) {
+        return
+      }
+      if(this.currentTime >= this.timeLimit) {
+        this.endGame();
+        return;
+      }
+      currentTime++;
+    },1000);
+
+
     // here update the timer and then the HTML. Check if the game is over.  
   }
 
@@ -61,13 +73,17 @@ const Game = class {
     // play sound
     var audio = new Audio('media/audio/score.mp3');
     audio.play();
-  }
+  };
 
   play() {
     this.active = true;
     this.currentTime = 0;
     this.update();
-    }
+  };
+
+  endGame() {
+    this.active = false;
+
   }
 }
 

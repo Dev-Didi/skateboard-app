@@ -9,8 +9,7 @@
 </head>
 <body>
     <h1>Counters</h1>
-    <p>Counter 1: <span id="counter1"></span></p>
-    <p>Counter 2: <span id="counter2"></span></p>
+    <p>Counter: <span id="counter"></span></p>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
@@ -20,8 +19,8 @@
 
         function updateCounters() {
             $.getJSON('/counters', function(data) {
-                $('#counter1').text(data.counter1);
-                $('#counter2').text(data.counter2);
+                $('#counter').text(parseInt(data["Counter"]));
+                console.log(data)
             });
         }
     </script>

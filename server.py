@@ -1,15 +1,19 @@
 # app.py
 
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, Response, render_template, jsonify, request
 
 app = Flask(__name__)
 
 # Store the counters in a dictionary
-counters = {'counter1': 0, 'counter2': 0}
+counter = 0
 
 @app.route('/')
 def index():
     return render_template('index.html')
+
+@app.route('/game')
+def game():
+    return game('game.html')
 
 @app.route("/oz")
 def oz():
@@ -17,14 +21,20 @@ def oz():
 
 @app.route('/counters')
 def get_counters():
-    return jsonify(counters)
+    data = {"Counter": f"{counter}"}
+    return data
 
 @app.route('/increment')
 def increment_counter():
-    counter_name = request.args.get('counter')
-    counters[counter_name] += 1
+    global counter
+    counter += 1
     return jsonify({'success': True})
 
+@app.route('/start')
+def start_game():
+    counter = 0
+    return jsonify({'success':True})
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(ssl_context='adhoc', debug=True)
 

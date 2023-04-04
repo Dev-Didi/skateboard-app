@@ -9,15 +9,14 @@
 </head>
 <body>
     <h1>Increment Counters</h1>
-    <button onclick="incrementCounter('counter1')">Increment Counter 1</button>
-    <button onclick="incrementCounter('counter2')">Increment Counter 2</button>
+    <button onclick="incrementCounter()">Increment Counter</button>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        function incrementCounter(counter) {
-            $.get('/increment', {'counter': counter}, function(data) {
+        function incrementCounter() {
+            $.get('/increment',{}, function(data) {
                 if (data.success) {
-                    console.log('Counter ' + counter + ' incremented');
+                    console.log('Counter incremented');
                 }
             });
         }
