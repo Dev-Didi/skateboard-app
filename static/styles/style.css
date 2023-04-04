@@ -1,0 +1,67 @@
+/*
+	--- COLORS ---
+	light:  HoneyDew
+	medium: DarkSeaGreen
+	dark:   DarkOliveGreen
+	text:   DarkSlateGray
+*/
+
+* {
+	font-family: Atkinson Hyperlegible;
+	font-size: 1em;
+	color: DarkSlateGray;
+}
+
+body {
+	background-color: DarkSeaGreen;
+	height: 100vh;
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+}
+
+h1 { font-size: 2em; }
+h2 { font-size: 1.5em; }
+h3 { font-size: 1.2em; }
+
+.center_h {
+	justify-content: center;
+}
+
+.center_v {
+	align-items: center;
+}
+
+.spread_h {
+	display: flex;
+	flex-direction: row;
+}
+
+.spread_v {
+	display: flex;
+	flex-direction: column;
+}
+
+.out {
+	background-color: HoneyDew;
+	border-radius: 24px;
+	margin: 18px;
+	padding: 18px;
+	/*
+	box-shadow:
+		-18px -18px 30px HoneyDew,
+		 18px  18px 30px DarkOliveGreen;
+		 */
+}
+
+.in {
+	background-color: DarkOliveGreen;
+	border-radius: 24px;
+	margin: 18px;
+	padding: 18px;
+	/*
+	box-shadow:
+		inset -18px -18px 30px HoneyDew;
+		inset  18px  18px 30px DarkOliveGreen;
+		*/
+}
