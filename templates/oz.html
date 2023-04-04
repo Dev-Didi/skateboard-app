@@ -1,0 +1,26 @@
+<!-- templates/increment.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Increment Counters</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Atkinson+Hyperlegible">
+</head>
+<body>
+    <h1>Increment Counters</h1>
+    <button onclick="incrementCounter('counter1')">Increment Counter 1</button>
+    <button onclick="incrementCounter('counter2')">Increment Counter 2</button>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function incrementCounter(counter) {
+            $.get('/increment', {'counter': counter}, function(data) {
+                if (data.success) {
+                    console.log('Counter ' + counter + ' incremented');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
