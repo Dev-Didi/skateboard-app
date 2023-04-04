@@ -18,7 +18,7 @@
         });
 
         function updateCounters() {
-            $.getJSON('/counters', function(data) {
+            $.getJSON('/count', function(data) {
                 $('#counter').text(parseInt(data["Counter"]));
                 console.log(data)
             });

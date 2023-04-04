@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 # Store the counters in a dictionary
 counter = 0
-
+start = False
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -19,7 +19,7 @@ def game():
 def oz():
     return render_template("oz.html")
 
-@app.route('/counters')
+@app.route('/count')
 def get_counters():
     data = {"Counter": f"{counter}"}
     return data
@@ -31,8 +31,14 @@ def increment_counter():
     return jsonify({'success': True})
 
 @app.route('/start')
+def get_start():
+    data = {"Start": f"{start}"}
+    return data
+
+@app.route('/startGame')
 def start_game():
     counter = 0
+    start = True
     return jsonify({'success':True})
 
 if __name__ == '__main__':
