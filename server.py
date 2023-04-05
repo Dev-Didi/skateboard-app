@@ -2,7 +2,7 @@
 
 from flask import Flask, Response, render_template, jsonify, request, logging
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 
 # Store the counters in a dictionary
 counter = 0
@@ -52,3 +52,6 @@ def start_game():
 if __name__ == '__main__':
     app.run(ssl_context='adhoc', debug=True)
 
+@app.route('/audio/score.mp3') 
+def get_score_audio(): 
+    return app.send_static_file('media/audio/score.mp3')

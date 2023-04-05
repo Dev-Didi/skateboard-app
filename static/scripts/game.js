@@ -36,11 +36,12 @@ const Game = class {
     this.timeLimit = 60;
     this.currentTime = 0;
     this.score = 0;
-    this.leg = joyCon;
+    this.leg = joyCon['value'];
     this.active = false;
     this.restart = false;
-    scoreText.innerHTML = "Score: " + this.score;
-    timeText.innerHTML = "Time Remaining: " + this.time;
+    scoreText.innerHTML =  this.score;
+    timeText.innerHTML = this.time;
+    this.scoreSound = new Audio('/audio/score.mp3');
     this.startServiceID = null
     this.updateServiceID = null
     this.checkStart(); 
@@ -87,16 +88,23 @@ const Game = class {
       clearInterval(this.updateServiceID);
     }
     // get the score 
+    
     $.getJSON('/count', (data) => {
-      this.score = parseInt(data["Counter"]);
+      var newScore = parseInt(data["Counter"]);
+      if (this.score != newScore) {
+        this.leg.rumble(600*(this.score - newScore),600*(this.score - newScore),0.5);
+        this.scoreSound.play();
+        this.score = newScore;
+      }
     });
+
     this.currentTime++;
     if(this.currentTime >= this.timeLimit) {
       this.endGame();
       clearInterval(this.updateServiceID);
     }
     timeText.innerHTML = this.timeLimit - this.currentTime;
-    scoreText.innerHTML = "Score: " + this.score;
+    scoreText.innerHTML = this.score;
   }
 
   async update() {
@@ -130,9 +138,14 @@ const Game = class {
 
 const initialiseGame = (cons) => {
   console.log("initialising game...");
+  console.log(cons.values().next())
   game = new Game(cons.values().next());
   startDiv.style.visibility = 'visible';
-  timeText.innerHTML = game.timeLimit;
+  timeDiv.style.visibility = 'visible';
+  scoreDiv.style.visibility = 'visible';
+
+  scoreText.innerHTML = '--';
+  timeText.innerHTML = '--';
   console.log("game initialised. Start options shown")
 };
 
