@@ -88,9 +88,6 @@ startButton.addEventListener('click', sendStart);
 vibrateButton.addEventListener('click',vibrate);
 
 
-
-
-
 var score = 0;
 var gameStarted = false;
 

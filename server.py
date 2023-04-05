@@ -72,6 +72,14 @@ def disconnectJoy():
     joyConConnected = False
     return jsonify({'Success':True})
 
-@app.route('/audio/score.mp3') 
-def get_score_audio(): 
-    return app.send_static_file('media/audio/score.mp3')
+@app.route('/audio/trick.wav') 
+def get_trick_audio(): 
+    return app.send_static_file('media/audio/trick.wav')
+
+@app.route('/audio/start.wav') 
+def get_start_audio(): 
+    return app.send_static_file('media/audio/start.wav')
+
+@app.route('/audio/end.wav') 
+def get_end_audio(): 
+    return app.send_static_file('media/audio/end.wav')

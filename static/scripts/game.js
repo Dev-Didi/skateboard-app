@@ -1,10 +1,4 @@
-import {
-  connectJoyCon,
-  connectedJoyCons,
-  JoyConLeft,
-  JoyConRight,
-  GeneralController,
-} from './node_modules/joy-con-webhid/src/index.js';
+
 import "https://code.jquery.com/jquery-3.6.0.min.js"
 
 const connectButton = document.querySelector('#connect-joy-cons');
@@ -22,7 +16,7 @@ const rootStyle = document.documentElement.style;
 
 // document.querySelector('#joycon-l').style.visibility = 'hidden';
 // document.querySelector('#joycon-r').style.visibility = 'hidden';
-connectButton.addEventListener('click', connectJoyCon);
+
 // vibrateButton.style.visibility = 'hidden';
 // startDiv.style.visibility = 'hidden';
 // timeDiv.style.visibility = 'hidden';
@@ -40,7 +34,9 @@ const Game = class {
     this.restart = false;
     scoreText.innerHTML =  this.score;
     timeText.innerHTML = this.time;
-    this.scoreSound = new Audio('/audio/score.mp3');
+    this.scoreSound = new Audio('/audio/trick.wav');
+    this.startSound = new Audio('/audio/start.wav');
+    this.endSound = new Audio('/audio/end.wav');
     this.startServiceID = null
     this.updateServiceID = null
     this.checkStart(); 
@@ -50,14 +46,16 @@ const Game = class {
     if (this.updateServiceID) {
       clearInterval(this.updateServiceID);
     }
+    timeDiv.style.visibility = 'visible';
     this.active = true;
     this.currentTime = 0;
     this.score = 0;
     this.sendStart();
-    scoreDiv.style.visibility = 'visible';
-    timeDiv.style.visibility = 'visible';
-    this.checkStart();
-    this.update();
+    this.startSound.play()
+    setTimeout(() => {
+      this.checkStart();
+      this.update();
+    },this.startSound.duration*1000);
   };
 
   listenForStart = async () => {
@@ -112,6 +110,7 @@ const Game = class {
   endGame() {
     this.active = false;
     timeDiv.style.visibility = 'hidden';
+    this.endSound.play();
 
   }
 }
@@ -132,12 +131,15 @@ var joyConnected = false;
 
 const checkForJoy = async function () {
   $.getJSON('/joyConnected', (data) => {
+    console.log("Checking if joycon connected...")
     if (data['Connected'] === 'True') {
       joyConnected = true;
+      console.log("joy connected")
       if (!game) {
         initialiseGame();
       };
     } else {
+      console.log("joy not connected")
       if (game) {
         if (game.active) {
           game.endGame();
