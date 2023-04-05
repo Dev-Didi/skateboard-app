@@ -73,7 +73,7 @@ img {
 
 /* Game screen stuff */
 
-#start-button, #connect-joy-cons {
+#start-button, #connect-joy-cons, #increment-button, #vibrate-joy-cons {
 	padding: 0 2em;
 	border-radius: 2em;
 	outline-style: solid;

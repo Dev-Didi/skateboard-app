@@ -111,18 +111,7 @@ const Game = class {
     this.updateServiceID = setInterval(this.updateService,1000);
   }
   
-  async checkScore() {
-    setInterval (async () => {
-    if(!this.active) {
-      return
-    } 
-    this.leg.rumble(600,600,0.5);
-    // play sound
-    var audio = new Audio('media/audio/score.mp3');
-    audio.play();
-    }, 1000);
-  };
-  
+
   sendStart() {
     $.get('/startGame'),{},(data) => {
       console.log("start message sent: " + data.success);
@@ -259,7 +248,6 @@ const waitForJoy = async function () {
     clearInterval(intervalID);
     console.log("joycon found. initialising...")
     initialiseGame(connectedJoyCons);
-
   }
 };
 

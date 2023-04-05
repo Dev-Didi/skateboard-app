@@ -4,9 +4,11 @@ from flask import Flask, Response, render_template, jsonify, request, logging
 
 app = Flask(__name__, static_folder='static')
 
-# Store the counters in a dictionary
+# server side variables
 counter = 0
 start = False
+joyConConnected = False
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -51,6 +53,24 @@ def start_game():
 
 if __name__ == '__main__':
     app.run(ssl_context='adhoc', debug=True)
+
+@app.route('/joyConnected')
+def joyConnected():
+    global joyConConnected
+    data = {"Connected":f"{joyConConnected}"}
+    return data
+
+@app.route('/connectJoy')
+def connectJoy():
+    global joyConConnected
+    joyConConnected = True
+    return jsonify({'Success':True})
+
+@app.route('/disconnectJoy') 
+def disconnectJoy():
+    global joyConConnected
+    joyConConnected = False
+    return jsonify({'Success':True})
 
 @app.route('/audio/score.mp3') 
 def get_score_audio(): 
