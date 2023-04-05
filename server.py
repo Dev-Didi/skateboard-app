@@ -1,6 +1,6 @@
 # app.py
 
-from flask import Flask, Response, render_template, jsonify, request
+from flask import Flask, Response, render_template, jsonify, request, logging
 
 app = Flask(__name__)
 
@@ -13,6 +13,10 @@ def index():
 
 @app.route('/game')
 def game():
+    global counter
+    global start
+    counter = 0
+    start = False
     return render_template('game.html')
 
 @app.route("/oz")
@@ -32,14 +36,18 @@ def increment_counter():
 
 @app.route('/start')
 def get_start():
+    global start
     data = {"Start": f"{start}"}
     return data
 
 @app.route('/startGame')
 def start_game():
+    app.logger.log(msg="start game signal received...",level=1)
+    global counter
+    global start
     counter = 0
-    start = True
-    return jsonify({'success':True})
+    start = not start
+    return jsonify({'Success':True})
 
 if __name__ == '__main__':
     app.run(ssl_context='adhoc', debug=True)

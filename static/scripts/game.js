@@ -24,7 +24,6 @@ const rootStyle = document.documentElement.style;
 // document.querySelector('#joycon-r').style.visibility = 'hidden';
 connectButton.addEventListener('click', connectJoyCon);
 // vibrateButton.style.visibility = 'hidden';
-startButton.style.visibility = 'hidden';
 startDiv.style.visibility = 'hidden';
 timeDiv.style.visibility = 'hidden';
 scoreDiv.style.visibility = 'hidden';
@@ -40,50 +39,70 @@ const Game = class {
     this.leg = joyCon;
     this.active = false;
     this.restart = false;
-
-    this.startSource = new EventSource('/start');
-    this.startSource.onmessage = function (e) {
-      if(this.active) {
-        this.restart = true;
-        this.play();
-      }
-      else {
-        this.play();
-      }
-    }
+    scoreText.innerHTML = "Score: " + this.score;
+    timeText.innerHTML = "Time Remaining: " + this.time;
+    this.startServiceID = null
+    this.updateServiceID = null
     this.checkStart(); 
   }
 
-  async checkStart() {
-    setInterval (async () => {
-      if(this.active) return;
-      $.getJSON('/start', function(data) {
-        if ('true' === data['Start'].toLowerCase()) {
+  play() {
+    if (this.updateServiceID) {
+      clearInterval(this.updateServiceID);
+    }
+    this.active = true;
+    this.currentTime = 0;
+    this.score = 0;
+    this.sendStart();
+    scoreDiv.style.visibility = 'visible';
+    timeDiv.style.visibility = 'visible';
+    this.checkStart();
+    this.update();
+  };
+
+  listenForStart = async () => {
+    console.log("listening for start...");
+      // if(this.active) return;
+      $.getJSON('/start', (data) => {
+        console.log(data);
+        console.log(typeof data['Start']);
+        if (data['Start'] === 'False') {
+          console.log("not starting.");
+        } else{
+          console.log("start received");
+          clearInterval(this.startServiceID);
           this.play();
         }
       });
-    },1000);
+    }
+
+  async checkStart() {
+    this.startServiceID = setInterval (this.listenForStart,1000);
   };
 
-  async update() {
-    setInterval (async () => {
-      if(!this.active || this.restart) {
-        return
-      }
-      // get the score 
-      $.getJSON('/count', function(data) {
-        this.score = parseInt(data["Counter"]);
-      });
-      currentTime++;
-      if(this.currentTime >= this.timeLimit) {
-        this.endGame();
-        return;
-      }
-      timeText.text = this.timeLimit - currentTime;
-      scoreText.text = this.score;
-    },1000);
+  updateService = async () => {
+    console.log("updating... active: " + this.active)
+    console.log("score: " + this.score)
+    if(!this.active || this.restart) {
+      clearInterval(this.updateServiceID);
+    }
+    // get the score 
+    $.getJSON('/count', (data) => {
+      this.score = parseInt(data["Counter"]);
+    });
+    this.currentTime++;
+    if(this.currentTime >= this.timeLimit) {
+      this.endGame();
+      clearInterval(this.updateServiceID);
+    }
+    timeText.innerHTML = this.timeLimit - this.currentTime;
+    scoreText.innerHTML = "Score: " + this.score;
   }
 
+  async update() {
+    this.updateServiceID = setInterval(this.updateService,1000);
+  }
+  
   async checkScore() {
     setInterval (async () => {
     if(!this.active) {
@@ -96,13 +115,11 @@ const Game = class {
     }, 1000);
   };
   
-
-
-  play() {
-    this.active = true;
-    this.currentTime = 0;
-    this.update();
-  };
+  sendStart() {
+    $.get('/startGame'),{},(data) => {
+      console.log("start message sent: " + data.success);
+    }
+  }
 
   endGame() {
     this.active = false;
@@ -112,11 +129,11 @@ const Game = class {
 }
 
 const initialiseGame = (cons) => {
-  this.game = new Game(cons[0]);
+  console.log("initialising game...");
+  game = new Game(cons.values().next());
   startDiv.style.visibility = 'visible';
-  scoreDiv.style.visibility = 'visible';
-  timeDiv.style.visibilty = 'visible';
-  timeText.text = game.timeLimit
+  timeText.innerHTML = game.timeLimit;
+  console.log("game initialised. Start options shown")
 };
 
 const visualize = (joyCon, packet) => {
@@ -200,10 +217,11 @@ const vibrate = (joyCon) => {
 
 startButton.addEventListener('click', (event) => {
   console.log("start clicked");
-  game.play();
+  game.sendStart();
 })
 
 function attachEventListenersToJoyCon(joyCon) {
+  console.log("attaching listeners for joy-con")
   if (joyCon.eventListenerAttached) {
     return;
   }
@@ -217,15 +235,23 @@ function attachEventListenersToJoyCon(joyCon) {
   });
 }
 
-// Joy-Cons may sleep until touched, so attach the listener dynamically.
-setInterval(async () => {
+var intervalID = null
+
+const waitForJoy = async function () {
   for (const joyCon of connectedJoyCons.values()) {
     attachEventListenersToJoyCon(joyCon);
   }
-  if((connectedJoyCons.values().length) > 0) {
-    initialiseGame(connectedJoyCons.values());
+  console.log(connectedJoyCons.size);
+  if((connectedJoyCons.size) > 0) {
+    clearInterval(intervalID);
+    console.log("joycon found. initialising...")
+    initialiseGame(connectedJoyCons);
+
   }
-}, 2000);
+};
+
+// Joy-Cons may sleep until touched, so attach the listener dynamically.
+intervalID = setInterval(waitForJoy, 2000);
 
 showDebug.addEventListener('input', (e) => {
   document.querySelector('#debug').style.display = e.target.checked
