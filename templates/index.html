@@ -1,63 +1,58 @@
 <!-- templates/index.html -->
-
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>Main Page</title>
-    <link rel="stylesheet" href= "static/styles/style.css">
+    <link rel="stylesheet" href="static/styles/style.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Atkinson+Hyperlegible">
-</head>
-<body>
-
-	<!-- Header -->
-	<div class="container out" style="flex-direction: column; height: 10vh; flex-shrink: 1;">
-		<h1>Homepage</h1>
+  </head>
+  <body>
+  
+    <!-- Header -->
+    <div class="container out" style="flex-direction: column; height: 10vh; flex-shrink: 1;">
+      <h1>Homepage</h1>
     </div>
-
-	<!-- The list of tricks -->
-    <div class="container out" style="flex-direction: column; padding: 2em 0 4em 0;">     
-    	<h2 style="width: 65vw">The app will recognise the following tricks:</h2>
-    	<div id="trick-list">
-		    <div class="trick">
-		      <p>Ollie</p>
-		      <img src="https://cdn.glitch.global/a77c4c83-440d-4d24-800e-0e086f78cb04/ollie.png?v=1680533384018" alt="Vector graphic of a skateboarder doing an ollie" />
-		    </div>
-<!--
-		    <div class="trick">
-		      <p>Nollie</p>
-		      <img src="https://cdn.glitch.global/a77c4c83-440d-4d24-800e-0e086f78cb04/nollie.png?v=1680533382246" alt="Vector graphic of a skateboarder doing a nollie" />
-		    </div>
--->
-		    <div class="trick">
-		      <p>Kickturn</p>        
-		      <img src="https://cdn.glitch.global/a77c4c83-440d-4d24-800e-0e086f78cb04/kickturn.png?v=1680533380570" alt="Vector graphic of a skateboarder doing a kickturn" />
-		    </div>
-		    <div class="trick">
-		      <p>Mystery trick</p>
-		      <img src="https://cdn.glitch.global/a77c4c83-440d-4d24-800e-0e086f78cb04/x.jpeg?v=1680533385596" alt="Something is wrong" />
-		    </div>  
-	    </div>     	
-    </div>
-
-	<!-- Start and leaderboard buttons -->
-	<div class="container" style="flex-direction: row; align-items: flex-start; justify-content: stretch;">
-		<div class="container out"><a href="game"><button><h2>Start</h2></button></a></div>
-		<div class="container out" style="margin: 3em 3em 0 0"><button><h2>Leaderboard</h2></button></div>
-	</div>
-	
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            setInterval(updateCounters, 1000);
-        });
-
-        function updateCounters() {
-            $.getJSON('/count', function(data) {
-                $('#counter').text(parseInt(data["Counter"]));
-                console.log(data)
-            });
-        }
-    </script>
     
-</body>
+    <!-- The list of tricks -->
+    <div class="container out" style="flex-direction: column; padding: 2em 0 4em 0;">
+      <h2 style="width: 65vw">The app will recognise the following tricks:</h2>
+      <div id="trick-list">
+        <div class="trick">
+          <p>Ollie</p>
+          <img src="https://cdn.glitch.global/a77c4c83-440d-4d24-800e-0e086f78cb04/ollie.png?v=1680533384018" alt="Vector graphic of a skateboarder doing an ollie" />
+        </div>
+        
+        <!--
+		    <div class="trick"><p>Nollie</p><img src="https://cdn.glitch.global/a77c4c83-440d-4d24-800e-0e086f78cb04/nollie.png?v=1680533382246" alt="Vector graphic of a skateboarder doing a nollie" /></div>
+-->
+
+        <div class="trick">
+          <p>Kickturn</p>
+          <img src="https://cdn.glitch.global/a77c4c83-440d-4d24-800e-0e086f78cb04/kickturn.png?v=1680533380570" alt="Vector graphic of a skateboarder doing a kickturn" />
+        </div>
+        
+        <div class="trick">
+          <p>Mystery trick</p>
+          <img src="https://cdn.glitch.global/a77c4c83-440d-4d24-800e-0e086f78cb04/x.jpeg?v=1680533385596" alt="Something is wrong" />
+        </div>
+        
+      </div>
+    </div>
+    <!-- Start and leaderboard buttons -->
+    <div class="container" style="flex-direction: row; justify-content: stretch;">
+      <div class="container out">
+        <a href="game">
+          <button>
+            <h2>Start</h2>
+          </button>
+        </a>
+      </div>
+      <div class="container out">
+        <button>
+          <h2>Leaderboard</h2>
+        </button>
+      </div>
+    </div>
+    
+  </body>
 </html>

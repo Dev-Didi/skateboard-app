@@ -15,6 +15,7 @@ body {
 	background-color: DarkSeaGreen;
 	height: 100vh;
 	margin: 0;
+	padding: 2em;
 	display: flex;
 	flex-direction: column;
 }
@@ -50,7 +51,6 @@ img {
 }
 
 .container {
-	flex-grow: 1;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -58,7 +58,31 @@ img {
 
 .out {
 	background-color: Ivory;
-	border-radius: 24px;
-	margin: 3em 3em 0 3em;
-	padding: 0 4em 0 4em;
+	border-radius: 2em;
+	margin: 2em;
+	padding: 4em;
+}
+
+.horizontal {
+	flex-direction: row;
+}
+
+.vertical {
+	flex-direction: column;
+}
+
+/* Game screen stuff */
+
+#start-button, #connect-joy-cons {
+	padding: 0 2em;
+	border-radius: 2em;
+	outline-style: solid;
+	outline-color: DarkSlateGray;
+	background-color: Ivory;
+}
+
+#start-div {
+	border: 0;
+	border-radius: 2em;
+	background-color: Ivory;
 }
