@@ -5,22 +5,31 @@ import {
   JoyConRight,
   GeneralController,
 } from './node_modules/joy-con-webhid/src/index.js';
+import "https://code.jquery.com/jquery-3.6.0.min.js"
 
 const connectButton = document.querySelector('#connect-joy-cons');
 const vibrateButton = document.querySelector('#vibrate-joy-cons');
+const startDiv = document.querySelector('#start-div');
 const startButton = document.querySelector('#start-button');
+const scoreDiv = document.querySelector('#score-div');
+const scoreText = document.querySelector('#score-text');
+const timeDiv = document.querySelector('#time-div');
+const timeText = document.querySelector('#time-text');
 const debugLeft = document.querySelector('#debug-left');
 const debugRight = document.querySelector('#debug-right');
 const showDebug = document.querySelector('#show-debug');
 const rootStyle = document.documentElement.style;
 
-document.querySelector('#joycon-l').style.visibility = 'hidden';
-document.querySelector('#joycon-r').style.visibility = 'hidden';
+// document.querySelector('#joycon-l').style.visibility = 'hidden';
+// document.querySelector('#joycon-r').style.visibility = 'hidden';
 connectButton.addEventListener('click', connectJoyCon);
-vibrateButton.style.visibility = 'hidden';
-startButton.style.visibility = 'hidden';
+// vibrateButton.style.visibility = 'hidden';
+startDiv.style.visibility = 'hidden';
+timeDiv.style.visibility = 'hidden';
+scoreDiv.style.visibility = 'hidden';
 
 
+var game = null
 
 const Game = class {
   constructor(joyCon) {
@@ -30,63 +39,102 @@ const Game = class {
     this.leg = joyCon;
     this.active = false;
     this.restart = false;
-    this.incSource = new EventSource('/increment');
-    this.incSource.onmessage = function (e) {
-      if(!this.active) return;
-      this.score = parseInt(e.data); 
-      scoreChanged();
+    scoreText.innerHTML = "Score: " + this.score;
+    timeText.innerHTML = "Time Remaining: " + this.time;
+    this.startServiceID = null
+    this.updateServiceID = null
+    this.checkStart(); 
+  }
+
+  play() {
+    if (this.updateServiceID) {
+      clearInterval(this.updateServiceID);
+    }
+    this.active = true;
+    this.currentTime = 0;
+    this.score = 0;
+    this.sendStart();
+    scoreDiv.style.visibility = 'visible';
+    timeDiv.style.visibility = 'visible';
+    this.checkStart();
+    this.update();
+  };
+
+  listenForStart = async () => {
+    console.log("listening for start...");
+      // if(this.active) return;
+      $.getJSON('/start', (data) => {
+        console.log(data);
+        console.log(typeof data['Start']);
+        if (data['Start'] === 'False') {
+          console.log("not starting.");
+        } else{
+          console.log("start received");
+          clearInterval(this.startServiceID);
+          this.play();
+        }
+      });
     }
 
-    this.startSource = new EventSource('/start');
-    this.startSource.onmessage = function (e) {
-      if(this.active) {
-        this.restart = true;
-        this.play();
-      }
-      else {
-        this.play();
-      }
+  async checkStart() {
+    this.startServiceID = setInterval (this.listenForStart,1000);
+  };
+
+  updateService = async () => {
+    console.log("updating... active: " + this.active)
+    console.log("score: " + this.score)
+    if(!this.active || this.restart) {
+      clearInterval(this.updateServiceID);
     }
+    // get the score 
+    $.getJSON('/count', (data) => {
+      this.score = parseInt(data["Counter"]);
+    });
+    this.currentTime++;
+    if(this.currentTime >= this.timeLimit) {
+      this.endGame();
+      clearInterval(this.updateServiceID);
+    }
+    timeText.innerHTML = this.timeLimit - this.currentTime;
+    scoreText.innerHTML = "Score: " + this.score;
   }
 
   async update() {
-    setInterval (async () => {
-      if(!this.active || this.restart) {
-        return
-      }
-      if(this.currentTime >= this.timeLimit) {
-        this.endGame();
-        return;
-      }
-      currentTime++;
-    },1000);
-
-
-    // here update the timer and then the HTML. Check if the game is over.  
+    this.updateServiceID = setInterval(this.updateService,1000);
   }
-
-  scoreChanged = function() {
+  
+  async checkScore() {
+    setInterval (async () => {
     if(!this.active) {
       return
-    }
+    } 
     this.leg.rumble(600,600,0.5);
     // play sound
     var audio = new Audio('media/audio/score.mp3');
     audio.play();
+    }, 1000);
   };
-
-  play() {
-    this.active = true;
-    this.currentTime = 0;
-    this.update();
-  };
+  
+  sendStart() {
+    $.get('/startGame'),{},(data) => {
+      console.log("start message sent: " + data.success);
+    }
+  }
 
   endGame() {
     this.active = false;
+    timeDiv.style.visibility = 'hidden';
 
   }
 }
 
+const initialiseGame = (cons) => {
+  console.log("initialising game...");
+  game = new Game(cons.values().next());
+  startDiv.style.visibility = 'visible';
+  timeText.innerHTML = game.timeLimit;
+  console.log("game initialised. Start options shown")
+};
 
 const visualize = (joyCon, packet) => {
   if (!packet || !packet.actualOrientation) {
@@ -100,27 +148,27 @@ const visualize = (joyCon, packet) => {
     actualOrientationQuaternion: orientationQuaternion,
   } = packet;
 
-  if (joyCon instanceof JoyConLeft || joyCon instanceof GeneralController) {
-    document.querySelector('#joycon-l').style.visibility = 'visible';
-  }
-  if (joyCon instanceof JoyConRight || joyCon instanceof GeneralController) {
-    document.querySelector('#joycon-r').style.visibility = 'visible';
-  }
+  // if (joyCon instanceof JoyConLeft || joyCon instanceof GeneralController) {
+  //   document.querySelector('#joycon-l').style.visibility = 'visible';
+  // }
+  // if (joyCon instanceof JoyConRight || joyCon instanceof GeneralController) {
+  //   document.querySelector('#joycon-r').style.visibility = 'visible';
+  // }
 
   // test led and rumble
-  if (buttons.a || buttons.up) {
-    joyCon.blinkLED(0);
-  }
-  if (buttons.b || buttons.down) {
-    joyCon.setLED(0);
-  }
-  if (buttons.x || buttons.right) {
-    joyCon.resetLED(0);
-    joyCon.rumble(600, 600, 0);
-  }
-  if (buttons.y || buttons.left) {
-    joyCon.rumble(600, 600, 0.5);
-  }
+  // if (buttons.a || buttons.up) {
+  //   joyCon.blinkLED(0);
+  // }
+  // if (buttons.b || buttons.down) {
+  //   joyCon.setLED(0);
+  // }
+  // if (buttons.x || buttons.right) {
+  //   joyCon.resetLED(0);
+  //   joyCon.rumble(600, 600, 0);
+  // }
+  // if (buttons.y || buttons.left) {
+  //   joyCon.rumble(600, 600, 0.5);
+  // }
 
   if (showDebug.checked) {
     const controller = joyCon instanceof JoyConLeft ? debugLeft : debugRight;
@@ -158,13 +206,26 @@ const visualize = (joyCon, packet) => {
 const vibrate = (joyCon) => {
   console.log("in vibrate function")
   joyCon.rumble(600,600,0.5);
-}
+};
+
+// vibrateButton.addEventListener('click', (event) => {
+//   console.log("vibrate clicked");
+//   for (const joyCon of connectedJoyCons.values())  {
+//     vibrate(joyCon);
+//   }
+// });
+
+startButton.addEventListener('click', (event) => {
+  console.log("start clicked");
+  game.sendStart();
+})
 
 function attachEventListenersToJoyCon(joyCon) {
+  console.log("attaching listeners for joy-con")
   if (joyCon.eventListenerAttached) {
     return;
   }
-  vibrateButton.style.visibility = 'visible';
+  // vibrateButton.style.visibility = 'visible';
   joyCon.eventListenerAttached = true;
   joyCon.enableVibration().then(() => {
     joyCon.rumble(600,600,0.5)
@@ -174,20 +235,23 @@ function attachEventListenersToJoyCon(joyCon) {
   });
 }
 
-// Joy-Cons may sleep until touched, so attach the listener dynamically.
-setInterval(async () => {
+var intervalID = null
+
+const waitForJoy = async function () {
   for (const joyCon of connectedJoyCons.values()) {
     attachEventListenersToJoyCon(joyCon);
   }
-}, 2000);
+  console.log(connectedJoyCons.size);
+  if((connectedJoyCons.size) > 0) {
+    clearInterval(intervalID);
+    console.log("joycon found. initialising...")
+    initialiseGame(connectedJoyCons);
 
-
-vibrateButton.addEventListener('click', (event) => {
-  console.log("vibrate clicked");
-  for (const joyCon of connectedJoyCons.values())  {
-    vibrate(joyCon);
   }
-});
+};
+
+// Joy-Cons may sleep until touched, so attach the listener dynamically.
+intervalID = setInterval(waitForJoy, 2000);
 
 showDebug.addEventListener('input', (e) => {
   document.querySelector('#debug').style.display = e.target.checked
