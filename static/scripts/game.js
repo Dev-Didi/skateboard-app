@@ -24,10 +24,10 @@ const rootStyle = document.documentElement.style;
 // document.querySelector('#joycon-r').style.visibility = 'hidden';
 connectButton.addEventListener('click', connectJoyCon);
 // vibrateButton.style.visibility = 'hidden';
-startDiv.style.visibility = 'hidden';
-timeDiv.style.visibility = 'hidden';
-scoreDiv.style.visibility = 'hidden';
-
+// startDiv.style.visibility = 'hidden';
+// timeDiv.style.visibility = 'hidden';
+// scoreDiv.style.visibility = 'hidden';
+startButton.disabled = true;
 
 var game = null
 
@@ -140,7 +140,7 @@ const initialiseGame = (cons) => {
   console.log("initialising game...");
   console.log(cons.values().next())
   game = new Game(cons.values().next());
-  startDiv.style.visibility = 'visible';
+  startButton.disabled = false;
   timeDiv.style.visibility = 'visible';
   scoreDiv.style.visibility = 'visible';
 
