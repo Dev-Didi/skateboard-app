@@ -40,6 +40,7 @@ const Game = class {
     this.startServiceID = null
     this.updateServiceID = null
     this.checkStart(); 
+    this.incrementTime = 0;
   }
 
   play() {
@@ -86,8 +87,11 @@ const Game = class {
         this.score = newScore;
       }
     });
-
-    this.currentTime++;
+    this.incrementTime++
+    if (this.incrementTime == 9) {
+      this.currentTime++;
+      this.incrementTime = 0;
+    }
     if(this.currentTime >= this.timeLimit) {
       this.endGame();
       clearInterval(this.updateServiceID);
@@ -97,7 +101,7 @@ const Game = class {
   }
 
   async update() {
-    this.updateServiceID = setInterval(this.updateService,1000);
+    this.updateServiceID = setInterval(this.updateService,100);
   }
   
 

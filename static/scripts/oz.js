@@ -1,6 +1,9 @@
 import {
   connectJoyCon,
   connectedJoyCons,
+  JoyConLeft,
+  JoyConRight,
+  GeneralController,
 } from './node_modules/joy-con-webhid/src/index.js';
 import "https://code.jquery.com/jquery-3.6.0.min.js"
 
@@ -11,6 +14,10 @@ const connectButton = document.querySelector('#connect-joy-cons');
 const vibrateButton = document.querySelector('#vibrate-joy-cons');
 const incrementButton = document.querySelector('#increment-button')
 
+const debugLeft = document.querySelector('#debug-left');
+const debugRight = document.querySelector('#debug-right');
+const showDebug = document.querySelector('#show-debug');
+
 const startedText = document.querySelector('#start-text');
 const scoreText = document.querySelector('#score-text');
 
@@ -19,6 +26,10 @@ const scoreText = document.querySelector('#score-text');
 var connected = false;
 var userJoyCon = null;
 
+// make sure to pass in the joy con you want to rumble
+const vibrate = () => {
+  userJoyCon.rumble(900,900,0.95);
+};
 
 // tell server to increment the score counter 
 function incrementCounter() {
@@ -30,10 +41,6 @@ function incrementCounter() {
   });
 };
 
-// make sure to pass in the joy con you want to rumble
-const vibrate = () => {
-  userJoyCon.rumble(600,600,0.5);
-};
 
 // send startGame signal to server 
 const sendStart = () => {
@@ -42,6 +49,79 @@ const sendStart = () => {
     console.log("start message sent: " + data.success);
   };
 };
+
+
+const checkThreshold = (con) => {
+
+}
+
+let peakX = 0;
+let peakY = 0;
+let peakZ = 0;
+
+const visualize = (joyCon, packet) => {
+  if (!packet || !packet.actualOrientation) {
+    return;
+  }
+  const {
+    actualAccelerometer: accelerometer,
+    buttonStatus: buttons,
+    actualGyroscope: gyroscope,
+    actualOrientation: orientation,
+    actualOrientationQuaternion: orientationQuaternion,
+  } = packet;
+
+  if (showDebug.checked) {
+    const curTime = Date.now()
+    const controller = joyCon instanceof JoyConLeft ? debugLeft : debugRight;
+    checkThreshold(controller);
+    controller.querySelector('pre').textContent =
+    'Orientation: \n' +
+      JSON.stringify(orientation, null, 2) +
+      '\n' +
+    'Orientation Quaternion: \n' + 
+      JSON.stringify(orientationQuaternion, null, 2) +
+      '\n' +
+    'Gyroscope: \n' +
+      JSON.stringify(gyroscope, null, 2) +
+      '\n' +
+    'Accelerometer: \n' +
+      JSON.stringify(accelerometer, null, 2) +
+      '\n';
+    const meterMultiplier = 300;
+    controller.querySelector('#acc-x').value =
+      accelerometer.x * meterMultiplier;
+    controller.querySelector('#acc-y').value =
+      accelerometer.y * meterMultiplier;
+    controller.querySelector('#acc-z').value =
+      accelerometer.z * meterMultiplier;
+
+
+    const gyroscopeMultiplier = 300;
+    controller.querySelector('#gyr-x').value =
+      gyroscope.rps.x * gyroscopeMultiplier;
+    controller.querySelector('#gyr-y').value =
+      gyroscope.rps.y * gyroscopeMultiplier;
+    controller.querySelector('#gyr-z').value =
+      gyroscope.rps.z * gyroscopeMultiplier;
+  }
+};
+
+function attachEventListenersToJoyCon(joyCon) {
+  console.log("attaching listeners for joy-con")
+  if (joyCon.eventListenerAttached) {
+    return;
+  }
+  // vibrateButton.style.visibility = 'visible';
+  joyCon.eventListenerAttached = true;
+  joyCon.enableVibration().then(() => {
+    joyCon.rumble(600,600,0.5)
+    joyCon.addEventListener('hidinput', (event) => {
+      visualize(joyCon, event.detail);
+    });
+  });
+};
+
 
 // interval ID's for async functions
 var waitForJoyID = null;
@@ -55,6 +135,7 @@ const waitForJoy = async function () {
     connected = true;
     console.log("joycon found. initialising...")
     userJoyCon = connectedJoyCons.values().next()['value']; 
+    attachEventListenersToJoyCon(userJoyCon)
     $.get('/connectJoy'),{},(data) => {
       console.log("joy-con connected message sent: " + data.success);
     }
@@ -87,9 +168,9 @@ incrementButton.addEventListener('click', incrementCounter);
 startButton.addEventListener('click', sendStart);
 vibrateButton.addEventListener('click',vibrate);
 
-
 var score = 0;
 var gameStarted = false;
+
 
 // listener for updating oz interface
 const updateService = async () => {
@@ -110,3 +191,9 @@ const updateService = async () => {
         })
     }
 }
+
+showDebug.addEventListener('input', (e) => {
+  document.querySelector('#debug').style.display = e.target.checked
+    ? 'flex'
+    : 'none';
+});
