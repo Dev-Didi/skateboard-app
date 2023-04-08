@@ -1,0 +1,30 @@
+<!-- templates/index.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Counter App</title>
+    <link rel="stylesheet" href= "static/styles/style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Atkinson+Hyperlegible">
+</head>
+<body>
+	<div class="out">
+	    <h1>Counters</h1>
+	    <p>Counter: <span id="counter"></span></p>
+    <div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            setInterval(updateCounters, 1000);
+        });
+
+        function updateCounters() {
+            $.getJSON('/counters', function(data) {
+                $('#counter').text(parseInt(data["Counter"]));
+                console.log(data)
+            });
+        }
+    </script>
+</body>
+</html>

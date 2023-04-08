@@ -1,0 +1,88 @@
+/*
+	--- COLORS ---
+	body-background: IndianRed
+	div-background:  Ivory
+	
+*/
+
+* {
+	font-family: Atkinson Hyperlegible;
+	font-size: 1em;
+	color: DarkSlateGray;
+}
+
+body {
+	background-color: DarkSeaGreen;
+	height: 100vh;
+	margin: 0;
+	padding: 2em;
+	display: flex;
+	flex-direction: column;
+}
+
+h1 { font-size: 8em; }
+h2 { font-size: 4em; }
+h3 { font-size: 2em; }
+
+button {
+	border: 0;
+	background-color: rgba(0,0,0,0);
+}
+
+img {
+	width: 30%;
+	padding: 10px;
+}
+
+#trick-list {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.trick {
+	font-size: 4em;
+	width: 60vw;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.out {
+	background-color: Ivory;
+	border-radius: 2em;
+	margin: 2em;
+	padding: 4em;
+}
+
+.horizontal {
+	flex-direction: row;
+}
+
+.vertical {
+	flex-direction: column;
+}
+
+/* Game screen stuff */
+
+#start-button, #connect-joy-cons, #increment-button, #vibrate-joy-cons {
+	padding: 0 2em;
+	border-radius: 2em;
+	outline-style: solid;
+	outline-color: DarkSlateGray;
+	background-color: Ivory;
+}
+
+#start-div {
+	border: 0;
+	border-radius: 2em;
+	background-color: Ivory;
+}

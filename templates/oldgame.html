@@ -1,0 +1,79 @@
+<!-- templates/game.html -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Game Page</title>
+    <link rel="stylesheet" href="static/styles/style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Atkinson+Hyperlegible">
+    <script src="static/scripts/game.js" type="module"></script>
+  </head>
+  <body>
+  
+    <!-- Header -->
+    <div class="container out">
+    	<h1>Skate Game</h1>
+    </div>
+    
+    <!-- Connect Section -->
+    <div id="connect-div">
+    	<li> Connect the <a href="https://en.wikipedia.org/wiki/Joy-Con#Other_platforms">Joy-Cons</a> via the operating system's Bluetooth setup dialog. </li>
+    	<li> Tap to pair Joy-Cons via <a href="https://web.dev/hid/">WebHID</a>. <button id="connect-joy-cons" type="button"><h3>Connect Joy-Cons</h3></button>
+    </div>
+    
+    <!-- Score -->
+    <div id="score-div">
+    	<h1 id="score-text"></h1>
+    </div>
+    
+    <!-- Time -->
+    <div id="time-div">
+    	<h1 id="time-text"></h1>
+    </div>
+    
+    <!-- Start Section -->
+    <div id="start-div">
+    	<h2> Stomp twice or press to start </h2>
+    	<button id="start-button" type="button">Start</button>
+    </div>
+
+    <!-- Debug Section -->
+    <div>
+    	<input id="show-debug" type="checkbox" />
+    	<label for="show-debug">Show debug info</label>
+    </div>
+    
+    <!-- <div id="debug"> -->
+    <!-- <div id="debug-left"> -->
+    <!-- <h1> JoyCon-L</h1> -->
+    <!-- <pre> -->
+    <!--  -->
+    <!-- </pre> -->
+    <!-- <p>Acceleration</p> -->
+    <!-- <meter id="acc-x" min="-1" max="1"></meter> -->
+    <!-- <meter id="acc-y" min="-1" max="1"></meter> -->
+    <!-- <meter id="acc-z" min="-1" max="1"></meter> -->
+    <!-- <br /> -->
+    <!-- <p>Gyroscope</p> -->
+    <!-- <meter id="gyr-x" min="-1" max="1"></meter> -->
+    <!-- <meter id="gyr-y" min="-1" max="1"></meter> -->
+    <!-- <meter id="gyr-z" min="-1" max="1"></meter> -->
+    <!-- </div> -->
+    <!--  -->
+    <!-- <div id="debug-right"> -->
+    <!-- <h1> JoyCon-R</h1> -->
+    <!-- <pre></pre> -->
+    <!-- <p>Acceleration</p> -->
+    <!-- <meter id="acc-x" min="-1" max="1"></meter> -->
+    <!-- <meter id="acc-y" min="-1" max="1"></meter> -->
+    <!-- <meter id="acc-z" min="-1" max="1"></meter> -->
+    <!-- <br /> -->
+    <!-- <p>Gyroscope</p> -->
+    <!-- <meter id="gyr-x" min="-1" max="1"></meter> -->
+    <!-- <meter id="gyr-y" min="-1" max="1"></meter> -->
+    <!-- <meter id="gyr-z" min="-1" max="1"></meter> -->
+    <!-- <p>RingCon Strain</p> -->
+    <!-- <meter id="rc-st" min="0" max="5000"></meter> -->
+    <!-- </div> -->
+    <!-- </div> -->
+  </body>
+</html>
