@@ -22,9 +22,11 @@ const startedText = document.querySelector('#start-text');
 const scoreText = document.querySelector('#score-text');
 
 
+
 // THIS IS THE JOYCON BE CAREFUL
 var connected = false;
 var userJoyCon = null;
+var state = 'STANDING';
 
 // make sure to pass in the joy con you want to rumble
 const vibrate = () => {
@@ -51,30 +53,48 @@ const sendStart = () => {
 };
 
 
-const checkThreshold = (con) => {
-
+const checkThreshold = (accelerometer) => {
+  const threshold = 0.03;
+  if (!accelerometer || !accelerometer.x) {
+    return;
+  }
+  if (Math.abs(accelerometer.z) > threshold) {
+    state = 'JUMPING';
+    return;
+  }
+  else {
+    state = 'STANDING';
+    return;
+  }
 }
 
-let peakX = 0;
-let peakY = 0;
-let peakZ = 0;
-
+var debounceJump;
 const visualize = (joyCon, packet) => {
   if (!packet || !packet.actualOrientation) {
     return;
   }
   const {
     actualAccelerometer: accelerometer,
-    buttonStatus: buttons,
     actualGyroscope: gyroscope,
     actualOrientation: orientation,
     actualOrientationQuaternion: orientationQuaternion,
   } = packet;
 
+ 
+  checkThreshold(accelerometer);
+  console.log("cur state:" + state)
+  if (state == 'JUMPING') {
+    clearTimeout(debounceJump)
+    debounceJump = setTimeout(() => { // if we are "jumping" for over interval time, increment counter
+      incrementCounter();
+    },500); 
+  }
+  
+
   if (showDebug.checked) {
     const curTime = Date.now()
     const controller = joyCon instanceof JoyConLeft ? debugLeft : debugRight;
-    checkThreshold(controller);
+
     controller.querySelector('pre').textContent =
     'Orientation: \n' +
       JSON.stringify(orientation, null, 2) +
