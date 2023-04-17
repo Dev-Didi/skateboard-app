@@ -1,11 +1,13 @@
 # skateboard-app
 
+This vanilla js project is designed with the use of joy-con-webhid. 
 
-## To Run Local ##
+The purpose of this project is to develop a web application that lets you connect two joy-cons and play a game that tracks "tricks" performed on a skateboard. 
 
-1. ensure you have npm installed
-2. Clone this repo 
-3. cd into it 
-4. run `npm install http-server -g` (may require sudo/admin privileges)
-5. run the server with `http-server` while still in the directory
-6 in either chrome or edge, go to `http://localhost:8080`
+Currently, since webhid is only available on Chromium desktop browsers and electron applications, this application can only be used properly on a desktop/laptop. Currently, you can connect the joycons on your desktop instance, and then connect to the server from a mobile device to control the game through API calls. 
+
+## To-do:
+1. Integrate second joy-con and seperate haptic feedback/motion detection between the joy-cons.
+2. Clean up api calls e.g. start-game and game-state. 
+3. Unhide the connection page (the "oz" page). 
+4. Implement and improve further trick detections.
